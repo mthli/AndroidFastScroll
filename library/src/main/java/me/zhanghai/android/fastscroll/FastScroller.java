@@ -29,13 +29,13 @@ import android.view.ViewGroupOverlay;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import java.util.Objects;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.math.MathUtils;
 import androidx.core.util.Consumer;
+
+import java.util.Objects;
 
 public class FastScroller {
 
@@ -129,6 +129,12 @@ public class FastScroller {
         return value;
     }
 
+    public void setTranslationX(float translationX) {
+        mTrackView.setTranslationX(translationX);
+        mThumbView.setTranslationX(translationX);
+        mPopupView.setTranslationX(translationX);
+    }
+
     public void setPadding(int left, int top, int right, int bottom) {
         if (mUserPadding != null && mUserPadding.left == left && mUserPadding.top == top
                 && mUserPadding.right == right && mUserPadding.bottom == bottom) {
@@ -183,7 +189,7 @@ public class FastScroller {
         mPopupView.setLayoutDirection(layoutDirection);
 
         boolean isLayoutRtl = layoutDirection == View.LAYOUT_DIRECTION_RTL;
-        int viewWidth = mView.getWidth();
+        int viewWidth = /* mView.getWidth(); */ Utils.getScreenWidth(mView.getContext());
         int viewHeight = mView.getHeight();
 
         Rect padding = getPadding();
@@ -342,10 +348,16 @@ public class FastScroller {
     private boolean isInViewTouchTarget(@NonNull View view, float x, float y) {
         int scrollX = mView.getScrollX();
         int scrollY = mView.getScrollY();
-        return isInTouchTarget(x, view.getLeft() - scrollX, view.getRight() - scrollX, 0,
-                mView.getWidth())
-                && isInTouchTarget(y, view.getTop() - scrollY, view.getBottom() - scrollY, 0,
-                mView.getHeight());
+        // return isInTouchTarget(x, view.getLeft() - scrollX, view.getRight() - scrollX, 0,
+        //         mView.getWidth())
+        //         && isInTouchTarget(y, view.getTop() - scrollY, view.getBottom() - scrollY, 0,
+        //         mView.getHeight());
+        return isInTouchTarget(
+                x - (int) view.getTranslationX(),
+                view.getLeft() - scrollX,
+                view.getRight() - scrollX, 0,
+                Utils.getScreenWidth(mView.getContext())
+        ) && isInTouchTarget(y, view.getTop() - scrollY, view.getBottom() - scrollY, 0, mView.getHeight());
     }
 
     private boolean isInTouchTarget(float position, int viewStart, int viewEnd, int parentStart,

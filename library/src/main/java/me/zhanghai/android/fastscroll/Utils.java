@@ -26,6 +26,7 @@ import android.os.Build;
 import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -68,5 +69,10 @@ class Utils {
             drawable.setTintList(getColorStateListFromAttrRes(tintAttrRes, context));
         }
         return drawable;
+    }
+
+    @IntRange(from = 0)
+    public static int getScreenWidth(@NonNull Context context) {
+        return context.getResources().getDisplayMetrics().widthPixels;
     }
 }
